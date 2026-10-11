@@ -1,136 +1,101 @@
 
+
 const chatForm = document.getElementById("chatForm");
 const messageInput = document.getElementById("messageInput");
 const chatMessages = document.getElementById("chatMessages");
-const sendButton = document.getElementById("sendButton");
 const clearButton = document.getElementById("clearButton");
 const statusMessage = document.getElementById("statusMessage");
 
-let history = [];
-let isWaiting = false;
+const demoAnswers = [
+  {
+    keywords: ["artificial intelligence", " ai ", "what is ai"],
+    answer: "Artificial intelligence (AI) is a technology that enables computers to perform tasks that usually require human intelligence, such as understanding language, recognizing patterns, and solving problems.\n\nExample: A learning assistant that answers questions in everyday language."
+  },
+  {
+    keywords: ["human-computer interaction", "hci", "human ai interaction"],
+    answer: "Human–Computer Interaction (HCI) studies how people interact with digital systems. Human–AI interaction extends this area to systems that can generate responses, make recommendations, or adapt to a user's needs.\n\nExample: A study assistant that explains a difficult concept and lets the student ask follow-up questions."
+  },
+  {
+    keywords: ["example", "real-world"],
+    answer: "A navigation app is a familiar example of human–AI interaction. It suggests routes using traffic information, while the user decides which route to follow. Good design keeps the recommendation understandable and leaves control with the user."
+  },
+  {
+    keywords: ["quiz", "test me"],
+    answer: "Let's start a quick quiz!\n\nQuestion 1: What does HCI stand for?\n\nA. Human–Computer Interaction\nB. High Computing Intelligence\nC. Human Communication Internet\n\nReply with A, B, or C."
+  },
+  {
+    keywords: ["simple", "explain", "easy words"],
+    answer: "Let's make it simple. Think of AI as a computer system that finds patterns and produces useful outputs. Human–AI interaction is about how people communicate with that system, understand its responses, and decide whether to trust or use them."
+  }
+];
 
 function addMessage(role, text) {
-    const message = document.createElement("div");
-    message.className = role === "user"
-        ? "message user-message"
-        : "message assistant-message";
+  const message = document.createElement("div");
+  message.className = role === "user"
+    ? "message user-message"
+    : "message assistant-message";
 
-    const avatar = document.createElement("div");
-    avatar.className = "message-avatar";
-    avatar.textContent = role === "user" ? "Y" : "S";
+  const avatar = document.createElement("div");
+  avatar.className = "message-avatar";
+  avatar.textContent = role === "user" ? "Y" : "S";
 
-    const bubble = document.createElement("div");
-    bubble.className = "bubble";
+  const bubble = document.createElement("div");
+  bubble.className = "bubble";
 
-    // Display plain text safely rather than interpreting AI output as HTML.
-    text.split("\n").forEach((line) => {
-        const paragraph = document.createElement("p");
-        paragraph.textContent = line || "\u00a0";
-        bubble.appendChild(paragraph);
-    });
+  text.split("\n").forEach(line => {
+    const paragraph = document.createElement("p");
+    paragraph.textContent = line || "\u00a0";
+    bubble.appendChild(paragraph);
+  });
 
-    message.appendChild(avatar);
-    message.appendChild(bubble);
-    chatMessages.appendChild(message);
-    chatMessages.scrollTop = chatMessages.scrollHeight;
-
-    return message;
+  message.append(avatar, bubble);
+  chatMessages.appendChild(message);
+  chatMessages.scrollTop = chatMessages.scrollHeight;
 }
 
-function setWaiting(waiting) {
-    isWaiting = waiting;
-    sendButton.disabled = waiting;
-    messageInput.disabled = waiting;
-    sendButton.querySelector("span").textContent =
-        waiting ? "Thinking..." : "Send";
-}
+function getAnswer(question) {
+  const normalized = " " + question.toLowerCase() + " ";
 
-async function sendMessage(text) {
-    const message = text.trim();
+  if (/^[\s]*(a|b|c)[\s.!?]*$/i.test(question)) {
+    const choice = question.trim().toUpperCase();
+    return choice === "A"
+      ? "Correct! HCI stands for Human–Computer Interaction. It studies how people interact with computers and digital systems.\n\nWould you like another question? Ask me to quiz you."
+      : "Not quite. The correct answer is A: Human–Computer Interaction. It focuses on making technology usable, accessible, and helpful for people.";
+  }
 
-    if (!message || isWaiting) {
-        return;
+  for (const item of demoAnswers) {
+    if (item.keywords.some(keyword => normalized.includes(keyword))) {
+      return item.answer;
     }
+  }
 
-    addMessage("user", message);
-    messageInput.value = "";
-    statusMessage.textContent = "Generating an AI response...";
-    setWaiting(true);
-
-    const typingMessage = addMessage("assistant", "Thinking through your question...");
-
-    try {
-        const response = await fetch("/chat", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                message: message,
-                history: history
-            })
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-            throw new Error(data.error || "The request could not be completed.");
-        }
-
-        typingMessage.querySelector(".bubble").textContent = data.answer;
-
-        history.push(
-            { role: "user", content: message },
-            { role: "assistant", content: data.answer }
-        );
-
-        history = history.slice(-20);
-        statusMessage.textContent = "AI response generated · Please verify important facts";
-    } catch (error) {
-        typingMessage.querySelector(".bubble").textContent =
-            "Sorry, I couldn't get a response. Please check that the app is running and the AI API is configured, then try again.";
-        statusMessage.textContent = "Response unavailable";
-        console.error("StudyMate request failed:", error);
-    } finally {
-        setWaiting(false);
-        messageInput.focus();
-        chatMessages.scrollTop = chatMessages.scrollHeight;
-    }
+  return "Thanks for your question! In this offline demonstration, I can respond to a limited set of study topics using prepared examples. Try asking me to explain AI simply, describe HCI, give a real-world example, or quiz you.\n\nThis is a rule-based prototype, not a live generative AI model.";
 }
 
-chatForm.addEventListener("submit", (event) => {
-    event.preventDefault();
-    sendMessage(messageInput.value);
+function sendMessage(text) {
+  const question = text.trim();
+  if (!question) return;
+
+  addMessage("user", question);
+  addMessage("assistant", getAnswer(question));
+  statusMessage.textContent = "Offline demo response · Not generated by a live AI";
+  messageInput.value = "";
+  messageInput.focus();
+}
+
+chatForm.addEventListener("submit", event => {
+  event.preventDefault();
+  sendMessage(messageInput.value);
 });
 
-document.querySelectorAll("[data-prompt]").forEach((button) => {
-    button.addEventListener("click", () => {
-        sendMessage(button.dataset.prompt);
-    });
+document.querySelectorAll("[data-prompt]").forEach(button => {
+  button.addEventListener("click", () => sendMessage(button.dataset.prompt));
 });
 
 clearButton.addEventListener("click", () => {
-    if (isWaiting) {
-        return;
-    }
-
-    history = [];
-    chatMessages.replaceChildren();
-
-    const welcome = document.createElement("div");
-    welcome.className = "message assistant-message";
-
-    const avatar = document.createElement("div");
-    avatar.className = "message-avatar";
-    avatar.textContent = "S";
-
-    const bubble = document.createElement("div");
-    bubble.className = "bubble";
-    bubble.textContent = "Conversation cleared. What would you like to learn next?";
-
-    welcome.append(avatar, bubble);
-    chatMessages.appendChild(welcome);
-
-    statusMessage.textContent = "Conversation cleared";
-    messageInput.focus();
+  chatMessages.replaceChildren();
+  addMessage("assistant", "Conversation cleared. What would you like to explore?");
+  statusMessage.textContent = "Conversation cleared";
 });
+
+
