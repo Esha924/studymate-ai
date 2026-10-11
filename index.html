@@ -1,0 +1,88 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StudyMate AI — Learning Companion</title>
+  <link rel="stylesheet" href="static/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="./">
+      <span class="brand-icon">S</span>
+      <span>StudyMate <span class="brand-ai">AI</span></span>
+    </a>
+    <span class="status"><span class="status-dot"></span> AI study assistant</span>
+  </header>
+
+  <main class="layout">
+    <section class="intro">
+      <p class="eyebrow">YOUR PERSONAL LEARNING COMPANION</p>
+      <h1>Learn anything.<br><span>One question at a time.</span></h1>
+      <p class="intro-copy">
+        Ask questions, explore examples, and learn at your own pace.
+        StudyMate helps make difficult concepts easier to understand.
+      </p>
+      <div class="trust-note">
+        <span class="info-icon">i</span>
+        <p>AI can make mistakes. Check important facts with reliable
+        academic sources. This demo runs without sending questions to an AI service.</p>
+      </div>
+    </section>
+
+    <section class="chat-card">
+      <div class="chat-heading">
+        <div class="assistant-avatar">S</div>
+        <div>
+          <h2>StudyMate Assistant</h2>
+          <p>Your friendly study partner</p>
+        </div>
+        <span class="ai-label">DEMO MODE</span>
+      </div>
+
+      <div id="chatMessages" class="messages" aria-live="polite">
+        <div class="message assistant-message">
+          <div class="message-avatar">S</div>
+          <div class="bubble">
+            <p>Hi! I'm StudyMate. What are you learning today?</p>
+            <p>Try one of the prompts below to explore the demo.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="suggestions">
+        <p>TRY ASKING</p>
+        <div class="suggestion-buttons">
+          <button type="button" data-prompt="Explain artificial intelligence in simple words.">Explain simply</button>
+          <button type="button" data-prompt="Give me an example of human-computer interaction.">Give an example</button>
+          <button type="button" data-prompt="Quiz me on basic computer science.">Quiz me</button>
+        </div>
+      </div>
+
+      <form id="chatForm" class="composer">
+        <label class="sr-only" for="messageInput">Your question</label>
+        <textarea id="messageInput" rows="2" maxlength="2000"
+          placeholder="Ask a study question..." required></textarea>
+        <div class="composer-bottom">
+          <span>Interactive demonstration · No API key required</span>
+          <button id="sendButton" type="submit">
+            <span>Send</span><span aria-hidden="true">↗</span>
+          </button>
+        </div>
+      </form>
+
+      <div class="conversation-actions">
+        <button id="clearButton" type="button">Clear conversation</button>
+        <span id="statusMessage" role="status"></span>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>StudyMate AI · A student project exploring human–AI interaction</p>
+  </footer>
+
+  <script src="static/script.js"></script>
+</body>
+</html>
