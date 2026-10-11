@@ -1,0 +1,98 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudyMate AI | Your Learning Companion</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header class="topbar">
+        <a class="brand" href="/">
+            <span class="brand-icon">S</span>
+            <span>StudyMate <span class="brand-ai">AI</span></span>
+        </a>
+        <span class="status"><span class="status-dot"></span> AI study assistant</span>
+    </header>
+
+    <main class="layout">
+        <section class="intro">
+            <p class="eyebrow">YOUR PERSONAL LEARNING COMPANION</p>
+            <h1>Learn anything.<br><span>One question at a time.</span></h1>
+            <p class="intro-copy">
+                Ask questions, explore examples, and learn at your own pace.
+                StudyMate helps make difficult concepts easier to understand.
+            </p>
+
+            <div class="trust-note">
+                <span class="info-icon">i</span>
+                <p>AI can make mistakes. Check important facts with reliable
+                academic sources. Your questions are sent to an AI service
+                to generate responses.</p>
+            </div>
+        </section>
+
+        <section class="chat-card" aria-label="StudyMate conversation">
+            <div class="chat-heading">
+                <div class="assistant-avatar">S</div>
+                <div>
+                    <h2>StudyMate Assistant</h2>
+                    <p>Your friendly study partner</p>
+                </div>
+                <span class="ai-label">AI POWERED</span>
+            </div>
+
+            <div id="chatMessages" class="messages" aria-live="polite">
+                <div class="message assistant-message">
+                    <div class="message-avatar">S</div>
+                    <div class="bubble">
+                        <p>Hi! I'm StudyMate. What are you learning today?</p>
+                        <p>You can ask me to explain a concept, give an example,
+                        or quiz you on a topic.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="suggestions">
+                <p>TRY ASKING</p>
+                <div class="suggestion-buttons">
+                    <button type="button" data-prompt="Explain artificial intelligence in simple words.">
+                        Explain simply
+                    </button>
+                    <button type="button" data-prompt="Give me a real-world example of human-computer interaction.">
+                        Give an example
+                    </button>
+                    <button type="button" data-prompt="Quiz me on the basics of computer science. Ask one question at a time.">
+                        Quiz me
+                    </button>
+                </div>
+            </div>
+
+            <form id="chatForm" class="composer">
+                <label class="sr-only" for="messageInput">Your question</label>
+                <textarea id="messageInput" rows="2"
+                    placeholder="Ask a study question..." maxlength="2000"
+                    required></textarea>
+                <div class="composer-bottom">
+                    <span>Clear questions help, but you can ask naturally.</span>
+                    <button id="sendButton" type="submit">
+                        <span>Send</span><span aria-hidden="true">↗</span>
+                    </button>
+                </div>
+            </form>
+
+            <div class="conversation-actions">
+                <button id="clearButton" type="button">Clear conversation</button>
+                <span id="statusMessage" role="status"></span>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>StudyMate AI · A student project exploring human–AI interaction</p>
+    </footer>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
